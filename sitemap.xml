@@ -4,14 +4,36 @@
   
   <url>
     <loc>https://oatovar.github.io/</loc>
+    <lastmod>2019-09-23T22:03:46-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://oatovar.github.io/categories/</loc>
+    <loc>https://oatovar.github.io/tags/microcorruption/</loc>
+    <lastmod>2019-09-23T22:03:46-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oatovar.github.io/posts/microcorruption-pt1/</loc>
+    <lastmod>2019-09-23T22:03:46-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oatovar.github.io/posts/</loc>
+    <lastmod>2019-09-23T22:03:46-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oatovar.github.io/tags/reverse-engineering/</loc>
+    <lastmod>2019-09-23T22:03:46-05:00</lastmod>
   </url>
   
   <url>
     <loc>https://oatovar.github.io/tags/</loc>
+    <lastmod>2019-09-23T22:03:46-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://oatovar.github.io/categories/</loc>
   </url>
   
 </urlset>

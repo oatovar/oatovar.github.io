@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Microcorruption Pt.1 // blog@localhost</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.58.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Oscar A. Tovar" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://oatovar.github.io/css/main.min.59023e5fd38d6ecb0e1dfbb295077c3c67e00e3b9eb3feaf34b5a5e6b332897a.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Microcorruption Pt.1"/>
+<meta name="twitter:description" content="Intro Welcome to the first part of my Microcorruption series. In this series I will document my experience with the Microcorruption CTF from Square and NCC Security US. My experience mostly lies within application security, but I have been increasingly more and more interested with reverse engineering. Keeping this in mind, my writeups will not feature the most intricate of solutions but will instead show the complete thought process of someone who is new to reversing."/>
+
+    <meta property="og:title" content="Microcorruption Pt.1" />
+<meta property="og:description" content="Intro Welcome to the first part of my Microcorruption series. In this series I will document my experience with the Microcorruption CTF from Square and NCC Security US. My experience mostly lies within application security, but I have been increasingly more and more interested with reverse engineering. Keeping this in mind, my writeups will not feature the most intricate of solutions but will instead show the complete thought process of someone who is new to reversing." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://oatovar.github.io/posts/microcorruption-pt1/" />
+<meta property="article:published_time" content="2019-09-23T22:03:46-05:00" />
+<meta property="article:modified_time" content="2019-09-23T22:03:46-05:00" />
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://oatovar.github.io/"><img class="app-header-avatar" src="/avatar.jpg" alt="Oscar A. Tovar" /></a>
+      <h1>blog@localhost</h1>
+      <p>A blog primarily covering security and programming.</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/oatovar"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Microcorruption Pt.1</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Sep 23, 2019
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          3 min read
+        </div><div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+          <a class="tag" href="https://oatovar.github.io/tags/microcorruption/">microcorruption</a><a class="tag" href="https://oatovar.github.io/tags/reverse-engineering/">reverse-engineering</a></div></div>
+    </header>
+    <div class="post-content">
+      
+
+<h1 id="intro">Intro</h1>
+
+<p>Welcome to the first part of my Microcorruption series. In this series I will document my experience with the Microcorruption CTF from Square and NCC Security US. My experience mostly lies within application security, but I have been increasingly more and more interested with reverse engineering. Keeping this in mind, my writeups will not feature the most intricate of solutions but will instead show the complete thought process of someone who is new to reversing. Even though I am new to reversing, I am familiar with software vulnerability concepts such as buffer overflows and do have some experience with assembly. My goal is to strengthen my understanding of both fields while getting some hands on experience applying them. That being said, let&rsquo;s get on to the fun stuff!</p>
+
+<h2 id="new-orleans">New Orleans</h2>
+
+<p>After completing the tutorial, you are given the &ldquo;New Orleans&rdquo; to solve. The concept of these challenges is to disarm a lock by inputting the correct password. Armed with the <a href="https://microcorruption.com/manual.pdf">manual</a> I proceeded to dive into the first challenge. My first instinct is to get a good sense of what the program is doing, so I scan the assembly code looking for things that seem to pop out as important. At first glance I notice the following function.</p>
+
+<pre><code>447e &lt;create_password&gt;
+447e:  3f40 0024      mov	#0x2400, r15
+4482:  ff40 5e00 0000 mov.b	#0x5e, 0x0(r15)
+4488:  ff40 6100 0100 mov.b	#0x61, 0x1(r15)
+448e:  ff40 7400 0200 mov.b	#0x74, 0x2(r15)
+4494:  ff40 6200 0300 mov.b	#0x62, 0x3(r15)
+449a:  ff40 4800 0400 mov.b	#0x48, 0x4(r15)
+44a0:  ff40 3300 0500 mov.b	#0x33, 0x5(r15)
+44a6:  ff40 7700 0600 mov.b	#0x77, 0x6(r15)
+44ac:  cf43 0700      mov.b	#0x0, 0x7(r15)
+44b0:  3041           ret
+</code></pre>
+
+<p>This function is called within the main function immediately upon executing it which hints that this might be setting the password at runtime.</p>
+
+<pre><code>4438 &lt;main&gt;
+4438:  3150 9cff      add	#0xff9c, sp
+443c:  b012 7e44      call	#0x447e &lt;create_password&gt;
+</code></pre>
+
+<p>Now that I have a general idea of what I should be looking for it&rsquo;s time to give the program a test run. During the test run I set a break point at <code>0x44c2</code> where the first comparison takes place within the <code>check_password</code> function. At this break point I see that the comparison is using the bytes stored at <code>0x2400</code>.</p>
+
+<pre><code>44bc &lt;check_password&gt;
+44bc:  0e43           clr	r14
+44be:  0d4f           mov	r15, r13
+44c0:  0d5e           add	r14, r13
+44c2:  ee9d 0024      cmp.b	@r13, 0x2400(r14)
+44c6:  0520           jne	#0x44d2 &lt;check_password+0x16&gt;
+44c8:  1e53           inc	r14
+44ca:  3e92           cmp	#0x8, r14
+44cc:  f823           jne	#0x44be &lt;check_password+0x2&gt;
+44ce:  1f43           mov	#0x1, r15
+44d0:  3041           ret
+44d2:  0f43           clr	r15
+44d4:  3041           ret
+</code></pre>
+
+<p>Looking at the memory we can see exactly what the created password is! This can be checked by verifying that the create password function saves the password at <code>0x2400</code>.</p>
+
+<pre><code>2400:   5e61 7462 4833 7700 0000 0000 0000 0000   ^atbH3w.........
+</code></pre>
+
+<p>Alright so now the only thing left to do is test out the password which should be <code>^atbH3w</code>. Success! The first challenge is now in the books and the next one is ready to be solved. Coming up next is &ldquo;Sydney&rdquo;.</p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>
